@@ -1,3 +1,5 @@
+package com.cooperatingpiano;
+
 import java.util.*;
 
 public class ChordGenerator {

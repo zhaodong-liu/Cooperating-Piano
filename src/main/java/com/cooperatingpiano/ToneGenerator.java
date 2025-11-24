@@ -1,3 +1,5 @@
+package com.cooperatingpiano;
+
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
@@ -25,8 +27,24 @@ public class ToneGenerator {
         };
         for (String note : notes) {
             try {
-                File file = new File("piano_samples/" + note + ".wav");
-                AudioInputStream ais = AudioSystem.getAudioInputStream(file);
+                // Try to load from classpath resources first
+                InputStream is = ToneGenerator.class.getResourceAsStream("/audio/piano_samples/" + note + ".wav");
+                if (is == null) {
+                    // Fallback to file system (for backwards compatibility)
+                    File file = new File("piano_samples/" + note + ".wav");
+                    if (file.exists()) {
+                        is = new FileInputStream(file);
+                    } else {
+                        // Try src/main/resources path
+                        file = new File("src/main/resources/audio/piano_samples/" + note + ".wav");
+                        if (file.exists()) {
+                            is = new FileInputStream(file);
+                        } else {
+                            throw new FileNotFoundException("Cannot find audio file for " + note);
+                        }
+                    }
+                }
+                AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(is));
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 byte[] buffer = new byte[1024];
                 int read;
@@ -34,9 +52,10 @@ public class ToneGenerator {
                     baos.write(buffer, 0, read);
                 }
                 pianoSamples.put(note, baos.toByteArray());
+                ais.close();
                 // System.out.println("Loaded sample for " + note);
             } catch (Exception e) {
-                System.err.println("Failed to load sample for " + note);
+                System.err.println("Failed to load sample for " + note + ": " + e.getMessage());
             }
         }
     }

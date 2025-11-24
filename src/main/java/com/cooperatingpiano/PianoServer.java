@@ -1,3 +1,5 @@
+package com.cooperatingpiano;
+
 import java.io.*;
 import java.net.*;
 import java.util.concurrent.CopyOnWriteArrayList;

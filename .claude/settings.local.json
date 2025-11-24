@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(find:*)",
+      "Bash(javac:*)",
+      "Bash(timeout 3 java:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
